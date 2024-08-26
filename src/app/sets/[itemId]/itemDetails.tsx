@@ -1,13 +1,20 @@
 "use client";
 
-import { updateSetItem, fetchUpdatedSetByName } from "@/service/item-set-service";
-import { useItemSet } from "@/hooks/useItemSet";
+import { createSetItem, updateSetItem } from "@/service/item-set-service";
+import { useItemSet, useItemSetUpdated } from "@/hooks/useItemSet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
 import NotFound from "../../not-found";
+import { ITEM_BY_NAME_KEY } from "@/utils/get-item-set";
 
-const ItemDetails = ({ itemId, initialData }: { itemId: string, initialData: any}) => {
+export interface ItemDetailsProps {
+    itemId: string,
+    initialData: any,
+    initialDataUpdated: any
+}
+
+const ItemDetails = ({ itemId, initialData, initialDataUpdated }: ItemDetailsProps) => {
     const queryClient = useQueryClient();
     
     // Fetch from PokemonTCG
@@ -17,13 +24,10 @@ const ItemDetails = ({ itemId, initialData }: { itemId: string, initialData: any
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [existingName, setExistingName] = useState(itemSet?.name);
 
-    // Fetch updated item
-    const {data: updatedItemSet, error: errorOnUpdatedItem, isLoading: isLoadingOnUpdatedItem} = useQuery({
-        queryKey: ["updatedItem", itemSet?.id],
-        queryFn: () => fetchUpdatedSetByName(itemSet?.id || ""),
-        enabled: !!existingName,
-        staleTime: 0
-    });
+    const { data: updatedItemSet } = useItemSetUpdated(itemId, initialDataUpdated);
+
+    console.log("initialDataUpdated", initialDataUpdated);
+    console.log("updatedItemSet", updatedItemSet);
     
     const [editedName, setEditedName] = useState(updatedItemSet?.updatedName || itemSet?.name);
     // const [updatedName, setUpdatedName] = useState(editedName);
@@ -36,13 +40,24 @@ const ItemDetails = ({ itemId, initialData }: { itemId: string, initialData: any
     }, [itemSet, updatedItemSet]);
 
     const mutation = useMutation({
-        mutationFn: ({itemId, itemSetToBeUpdated}: {itemId: string, itemSetToBeUpdated: any}) => updateSetItem(itemId, itemSetToBeUpdated),
+        mutationFn: ({itemId, itemSetToBeUpdated}: {itemId: string, itemSetToBeUpdated: any}) => {
+            return !!updatedItemSet?._id ? updateSetItem(itemId, itemSetToBeUpdated) : createSetItem(itemId, itemSetToBeUpdated)
+        },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
                 queryKey: ["updatedItem", itemSet?.id]
             });
             setIsModalVisible(false);
-        }
+        },
+        onError: (error) => {
+            // Handle error appropriately, maybe show a notification or set an error state
+            console.error("Mutation failed:", error);
+        },
+        // Optional: Optimistic updates
+        onMutate: (variables) => {
+            // Perform an optimistic update here if necessary
+            // For example: set the edited name immediately in the UI
+        },
     });
 
     if(!itemSet) {
