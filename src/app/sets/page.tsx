@@ -3,8 +3,6 @@ import PokemonSlider from "@/components/pokemonSlider";
 import ItemsSetList from "./itemList";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
-export const dynamic = 'force-static';
-
 const ItemsSets = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
