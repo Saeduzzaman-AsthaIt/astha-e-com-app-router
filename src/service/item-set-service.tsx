@@ -1,35 +1,12 @@
 import { PokemonTCG } from "pokemon-tcg-sdk-typescript";
 import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk";
+import { cache } from "react";
 
 
 const urlForUpdate = "https://crud-nextjs-mongo-kappa.vercel.app/api/sets";
 const headersForUpdate = {
     'X-API-KEY': '7b651729-1270-4d37-9dca-1730d2ebc0ee',
     'Content-Type': 'application/json'
-};
-
-export const ITEM_BY_ID_QUERY_KEY = "item";
-export const SETS_QUERY_KEY = "sets";
-
-const fetchSetById = async (id: string) => {
-    console.log("Before fetch by id")
-    const data: Set = await PokemonTCG.findSetByID(id);
-    console.log("After fetch By Id", id);
-    console.log(data);
-    return data;
-}
-
-export default fetchSetById;
-
-
-
-export const fetchSets = async () => {
-    const data: Set[] = Array.from(await PokemonTCG.getAllSets());
-    console.log("Pokemon Sets --- ");
-    console.log(data);
-    // TODO: get new to old here
-    // return data.slice(0, 10);
-    return data;
 };
 
 export const updateSetItem = async (itemName: string, itemSetToBeUpdated: any) => {

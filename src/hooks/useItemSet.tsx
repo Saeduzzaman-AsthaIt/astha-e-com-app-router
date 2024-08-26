@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import fetchSetById, { fetchSets, ITEM_BY_ID_QUERY_KEY, SETS_QUERY_KEY } from "@/service/item-set-service"
+import fetchSetById, { fetchSets, ITEM_BY_ID_QUERY_KEY, SETS_QUERY_KEY } from "@/utils/get-item-set"
 import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk"
 
 export const useItemSet = (itemId: string, initialData?: Set) => {
@@ -7,6 +7,7 @@ export const useItemSet = (itemId: string, initialData?: Set) => {
         queryKey: [ITEM_BY_ID_QUERY_KEY, itemId],
         queryFn: () => fetchSetById(itemId),
         initialData,
+        refetchOnMount: false,
         enabled: !!itemId
     })
 }

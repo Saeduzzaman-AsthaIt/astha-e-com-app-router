@@ -2,30 +2,10 @@
 
 import ItemCard from "@/components/itemCard";
 import QuickView from "@/components/quickView";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
-import { GetStaticProps } from "next";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
-import { fetchSets, SETS_QUERY_KEY } from "@/service/item-set-service";
 import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk";
 import { useItemsSets } from "@/hooks/useItemSet";
-
-export const getStaticProps: GetStaticProps = async () => {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: [SETS_QUERY_KEY],
-    queryFn: fetchSets,
-  });
-
-  return {
-    props: {
-      // TODO: do not set sets here, rather implement a custom hook to get data in the component
-      // sets: queryClient.getQueriesData({ queryKey: ["sets"] }),
-      dehydratedState: dehydrate(queryClient),
-    },
-    revalidate: 60,
-  };
-};
 
 const ItemsSetList = ({initialData}: {initialData: any}) => {
   const { data: itemsSets} = useItemsSets(initialData);

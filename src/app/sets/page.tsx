@@ -1,4 +1,4 @@
-import { fetchSets, SETS_QUERY_KEY } from "@/service/item-set-service";
+import { fetchSets, SETS_QUERY_KEY } from "@/utils/get-item-set";
 import PokemonSlider from "@/components/pokemonSlider";
 import ItemsSetList from "./itemList";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
