@@ -5,7 +5,7 @@ import { useItemSet } from "@/hooks/useItemSet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
-import Custom404 from "../../404";
+import NotFound from "../../not-found";
 
 const ItemDetails = ({ itemId, initialData }: { itemId: string, initialData: any}) => {
     const queryClient = useQueryClient();
@@ -47,7 +47,7 @@ const ItemDetails = ({ itemId, initialData }: { itemId: string, initialData: any
 
     if(!itemSet) {
         console.log("Inside ItemDetails --- no itemset");
-        return <Custom404 />; // Show 404 page when itemSet is not found
+        return <NotFound />; // Show 404 page when itemSet is not found
     }
 
     // The followings are not necessary
