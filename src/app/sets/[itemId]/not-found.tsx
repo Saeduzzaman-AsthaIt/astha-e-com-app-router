@@ -1,7 +1,7 @@
 const NotFound = () => {
     return (
         <>
-            <h1>abcdefg | GLOBAL (404)</h1>
+            <h1>abcdefg | 404</h1>
         </>
     )
 }

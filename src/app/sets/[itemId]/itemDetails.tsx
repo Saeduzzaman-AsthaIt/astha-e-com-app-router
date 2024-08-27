@@ -5,7 +5,7 @@ import { SetUpdated, useItemSet, useItemSetUpdated } from "@/hooks/useItemSet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
-import NotFound from "../../not-found";
+import NotFound from "./not-found";
 import { ITEM_BY_NAME_KEY } from "@/utils/get-item-set";
 import revalidateItmeSetPage from "@/server-actions/server-actions";
 
@@ -19,19 +19,14 @@ const ItemDetails = ({ itemId, initialData, initialDataUpdated }: ItemDetailsPro
     const queryClient = useQueryClient();
     
     // Fetch from PokemonTCG
-    console.log(initialData, "initialData by ID");
     const {data: itemSet, error, isLoading} = useItemSet(itemId, initialData);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [existingName, setExistingName] = useState(itemSet?.name);
 
     const { data: updatedItemSet } = useItemSetUpdated(itemId, initialDataUpdated);
-
-    console.log("initialDataUpdated", initialDataUpdated);
-    console.log("updatedItemSet", updatedItemSet);
     
     const [editedName, setEditedName] = useState(updatedItemSet?.updatedName || itemSet?.name);
-    // const [updatedName, setUpdatedName] = useState(editedName);
     const [inputError, setInputError] = useState("");
 
     useEffect(() => {
