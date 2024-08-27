@@ -7,6 +7,7 @@ import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
 import NotFound from "../../not-found";
 import { ITEM_BY_NAME_KEY } from "@/utils/get-item-set";
+import revalidateItmeSetPage from "@/server-actions/server-actions";
 
 export interface ItemDetailsProps {
     itemId: string,
@@ -45,9 +46,12 @@ const ItemDetails = ({ itemId, initialData, initialDataUpdated }: ItemDetailsPro
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
-                queryKey: ["updatedItem", itemSet?.id]
+                queryKey: [ITEM_BY_NAME_KEY, itemSet?.id]
             });
             setIsModalVisible(false);
+
+            const { itemId } = variables;
+            revalidateItmeSetPage(itemId);
         },
         onError: (error) => {
             // Handle error appropriately, maybe show a notification or set an error state
@@ -105,7 +109,7 @@ const ItemDetails = ({ itemId, initialData, initialDataUpdated }: ItemDetailsPro
         
         const itemSetToBeUpdated: SetUpdated = {updatedName: editedName};
 
-        if(!!updatedItemSet?._id) {
+        if(!updatedItemSet?._id) {
             itemSetToBeUpdated.name = itemSet.id;
         }
 
