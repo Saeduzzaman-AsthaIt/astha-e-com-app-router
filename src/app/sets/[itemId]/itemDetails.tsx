@@ -1,7 +1,7 @@
 "use client";
 
 import { createSetItem, updateSetItem } from "@/service/item-set-service";
-import { useItemSet, useItemSetUpdated } from "@/hooks/useItemSet";
+import { SetUpdated, useItemSet, useItemSetUpdated } from "@/hooks/useItemSet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
@@ -41,7 +41,7 @@ const ItemDetails = ({ itemId, initialData, initialDataUpdated }: ItemDetailsPro
 
     const mutation = useMutation({
         mutationFn: ({itemId, itemSetToBeUpdated}: {itemId: string, itemSetToBeUpdated: any}) => {
-            return !!updatedItemSet?._id ? updateSetItem(itemId, itemSetToBeUpdated) : createSetItem(itemId, itemSetToBeUpdated)
+            return !!updatedItemSet?._id ? updateSetItem(itemId, itemSetToBeUpdated) : createSetItem(itemId, itemSetToBeUpdated);
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
@@ -102,7 +102,14 @@ const ItemDetails = ({ itemId, initialData, initialDataUpdated }: ItemDetailsPro
         // mutation.mutate({itemName: "Legendary Collection", itemSetToBeUpdated: {name: editedName}});
         // mutation.mutate({itemName: editedName || "", itemSetToBeUpdated: {name: editedName}});
         // mutation.mutate({itemName: existingName || "", itemSetToBeUpdated: {name: editedName}});
-        mutation.mutate({itemId: itemSet.id, itemSetToBeUpdated: {updatedName: editedName}});
+        
+        const itemSetToBeUpdated: SetUpdated = {updatedName: editedName};
+
+        if(!!updatedItemSet?._id) {
+            itemSetToBeUpdated.name = itemSet.id;
+        }
+
+        mutation.mutate({itemId: itemSet.id, itemSetToBeUpdated});
     }
 
     let newName = updatedItemSet?.updatedName || itemSet?.name;

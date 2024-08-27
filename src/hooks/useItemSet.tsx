@@ -3,10 +3,10 @@ import fetchSetById, { fetchSets, fetchUpdatedSetByName, ITEM_BY_ID_QUERY_KEY, I
 import { Set } from "pokemon-tcg-sdk-typescript/dist/sdk"
 
 export interface SetUpdated {
-    _id: string,
-    name: string,
-    updatedName: string,
-    title: string
+    _id?: string,
+    name?: string,
+    updatedName?: string,
+    title?: string
 }
 
 export const useItemSet = (itemId: string, initialData?: Set) => {
